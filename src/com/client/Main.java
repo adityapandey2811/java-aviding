@@ -78,15 +78,21 @@ public class Main {
                         Date fromDate = KeyBoardUtil.getDate("Enter from date(YYYY-MM-DD) :");
 
                         Date toDate = KeyBoardUtil.getDate("Enter to date(YYYY-MM-DD) :");
-                        if(toDate.before(fromDate) && fromDate.before(new Date())) {
+                        if(toDate.before(fromDate)) {
                             System.out.println("Invalid Dates");
+                            return;
+                        }
+                        if(fromDate.before(new Date())) {
+                            System.out.println("Invalid Dates");
+                            return;
                         }
                         ArrayList<Vehicle> vehicleList = ob.getAvailableVehicles(vehicleCateChoice, toDate, fromDate);
+                        System.out.println("Index\tVehicle ID\tReg No");
                         for (Vehicle d : vehicleList) {
-                            System.out.println(d.getVehicleId() + "\t" + d.getRegNo());
+                            System.out.println(vehicleList.indexOf(d) + 1 + "\t\t" + d.getVehicleId() + "\t\t" + d.getRegNo());
                         }
-                        int vehicleId = KeyBoardUtil.getInt("Enter the Vehicle Id: ");
-                        Vehicle vehicle = vehicleList.get(vehicleId - 1);
+                        int vehicleId = KeyBoardUtil.getInt("Enter the Vehicle Index: ");
+                        Vehicle vehicle = vehicleList.get(vehicleId-1);
 
                         // Calculate the difference in days
                         LocalDate localDate1 = toDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -94,7 +100,10 @@ public class Main {
                         long daysDifference = Math.abs(Duration.between(localDate1.atStartOfDay(), localDate2.atStartOfDay()).toDays());
 
                         int totalRent = (int) (daysDifference*ob.getDailyRent(vehicle));
-
+                        if (totalRent == 0) {
+                            System.out.println("Rent Error");
+                            return;
+                        }
                         Booking booking = new Booking(customerName, vehicleCateChoice, vehicle, fromDate, toDate, totalRent, true);
                         ob.bookVehicle(booking);
 

@@ -23,6 +23,12 @@ public class Vehicle {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Vehicle(int vehicleId, String regNo) {
+		super();
+		this.vehicleId = vehicleId;
+		this.regNo = regNo;
+	}
+
 	public Vehicle(int vehicleId, String regNo, VehicleCategory vehicleCategory, String manufacturer, int dailyRent, int mileage, FuelType fuelType, String desc) {
 		super();
 		this.vehicleId = vehicleId;

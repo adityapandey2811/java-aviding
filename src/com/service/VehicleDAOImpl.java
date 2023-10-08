@@ -67,10 +67,23 @@ public class VehicleDAOImpl implements VehicleDAO {
     public void bookVehicle(Booking b) {
 //        getRegisteredVehicle(1);
 //        System.out.println(b);
-        String bookingQuery = "";
+        String bookingQuery = "INSERT INTO BOOKING VALUES(DEFAULT, ?,?,?,?,?,?,?);";
         try {
             con = bd.getConnection();
             PreparedStatement ps = con.prepareStatement(bookingQuery);
+            ps.setInt(1, b.getVehicle().getVehicleId());
+            ps.setString(2, b.getCustomerName());
+            ps.setInt(3, b.getVehicleCategory().getVehicleCategoryId());
+            ps.setDate(4, new java.sql.Date(b.getBookFrom().getTime()));
+            ps.setDate(5, new java.sql.Date(b.getBookTo().getTime()));
+            ps.setInt(6, b.getTotalRent());
+            ps.setBoolean(7, false);
+            int res = ps.executeUpdate();
+            if(res == 1) {
+                System.out.println("Booking Successful");
+            } else {
+                System.out.println("Booking Failed");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -128,12 +141,17 @@ public class VehicleDAOImpl implements VehicleDAO {
         ArrayList<Vehicle> availableVehicles = new ArrayList<>();
         try {
             con = bd.getConnection();
-            String availableVehicleListQuery = "SELECT * FROM VEHICLE WHERE VEHICLE_CATEGORY_ID = ? AND FUEL_TYPE_ID = ? " +
-                    "AND BOOK_FROM NOT IN (SELECT * FROM BOOKING WHERE )";
+            String availableVehicleListQuery = "SELECT * FROM VEHICLE V WHERE V.VEHICLE_CATEGORY_ID = ? AND NOT EXISTS (SELECT * FROM BOOKING B " +
+                    "WHERE V.VEHICLE_ID = B.VEHICLE_ID AND ? <= B.BOOK_TO AND ? >= B.BOOK_FROM);";
+//            String availableVehicleListQuery = "SELECT V.* FROM VEHICLE V LEFT JOIN BOOKING B" +
+//                    " ON V.VEHICLE_ID = B.VEHICLE_ID AND ? <= B.BOOK_TO AND ? >= B.BOOK_FROM WHERE V.VEHICLE_CATEGORY_ID = ?;";
             PreparedStatement ps = con.prepareStatement(availableVehicleListQuery);
+            ps.setInt(1,vehicleCategory.getVehicleCategoryId());
+            ps.setDate(2, new java.sql.Date(fromDate.getTime()));
+            ps.setDate(3, new java.sql.Date(toDate.getTime()));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                availableVehicles.add(new Vehicle());
+                availableVehicles.add(new Vehicle(rs.getInt(1), rs.getString(2)));
             }
             return availableVehicles;
 
@@ -152,7 +170,7 @@ public class VehicleDAOImpl implements VehicleDAO {
             String dailyRentQuery = "SELECT DAILY_RENT FROM VEHICLE WHERE VEHICLE_ID = ?";
             PreparedStatement ps = con.prepareStatement(dailyRentQuery);
             ps.setInt(1,vehicle.getVehicleId());
-            ResultSet rs = ps.executeQuery(dailyRentQuery);
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 dailyRent = rs.getInt(1);
             }
@@ -161,6 +179,6 @@ public class VehicleDAOImpl implements VehicleDAO {
             e.printStackTrace();
         }
 
-        return 0;
+        return dailyRent;
     }
 }
