@@ -76,13 +76,13 @@ public class Main {
                         VehicleCategory vehicleCateChoice = vehicleCategoryList.get(vehicleTypeChoice - 1);
 
                         Date fromDate = KeyBoardUtil.getDate("Enter from date(YYYY-MM-DD) :");
+                        if(fromDate.before(new Date())) {
+                        	System.out.println("Invalid Dates");
+                        	return;
+                        }
 
                         Date toDate = KeyBoardUtil.getDate("Enter to date(YYYY-MM-DD) :");
                         if(toDate.before(fromDate)) {
-                            System.out.println("Invalid Dates");
-                            return;
-                        }
-                        if(fromDate.before(new Date())) {
                             System.out.println("Invalid Dates");
                             return;
                         }
@@ -104,7 +104,7 @@ public class Main {
                             System.out.println("Rent Error");
                             return;
                         }
-                        Booking booking = new Booking(customerName, vehicleCateChoice, vehicle, fromDate, toDate, totalRent, true);
+                        Booking booking = new Booking(customerName, vehicleCateChoice, vehicle.getRegNo(), fromDate, toDate, totalRent, true);
                         ob.bookVehicle(booking);
 
                     } catch (ParseException e) {
@@ -116,6 +116,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("REPORT: ");
+                    ob.generateReport();
                     break;
                 case 4:
                     return;

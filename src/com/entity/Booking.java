@@ -5,7 +5,7 @@ import java.util.Date;
 public class Booking {
 	private String customerName;
 	private VehicleCategory vehicleCategory;
-	private Vehicle vehicle;
+	private String regNo;
 	private Date bookFrom;
 	private Date bookTo;
 	private int totalRent;
@@ -16,12 +16,12 @@ public class Booking {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Booking(String customerName, VehicleCategory vehicleCategory, Vehicle vehicle, Date bookFrom, Date bookTo,
+	public Booking(String customerName, VehicleCategory vehicleCategory, String regNo, Date bookFrom, Date bookTo,
 			int totalRent, boolean payment) {
 		super();
 		this.customerName = customerName;
 		this.vehicleCategory = vehicleCategory;
-		this.vehicle = vehicle;
+		this.regNo = regNo;
 		this.bookFrom = bookFrom;
 		this.bookTo = bookTo;
 		this.totalRent = totalRent;
@@ -30,7 +30,7 @@ public class Booking {
 
 	@Override
 	public String toString() {
-		return "Booking [customerName=" + customerName + ", vehicleCategory=" + vehicleCategory + ", vehicle=" + vehicle
+		return "Booking [customerName=" + customerName + ", vehicleCategory=" + vehicleCategory + ", regNo=" + regNo
 				+ ", bookFrom=" + bookFrom + ", bookTo=" + bookTo + ", totalRent=" + totalRent + ", payment=" + payment
 				+ "]";
 	}
@@ -51,12 +51,12 @@ public class Booking {
 		this.vehicleCategory = vehicleCategory;
 	}
 
-	public Vehicle getVehicle() {
-		return vehicle;
+	public String getRegNo() {
+		return regNo;
 	}
 
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
+	public void setRegNo(String regNo) {
+		this.regNo = regNo;
 	}
 
 	public Date getBookFrom() {
